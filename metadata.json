@@ -1,0 +1,8 @@
+{
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ],
+  "name": "DreamBookGenie",
+  "description": ""
+}

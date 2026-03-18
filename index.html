@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Spark-a-Loom</title>
+    <script>
+      // Suppress specific console logs requested by user
+      (function() {
+        const originalLog = console.log;
+        const originalDebug = console.debug;
+        const originalInfo = console.info;
+
+        const shouldSuppress = (args) => {
+          const msg = args[0];
+          if (typeof msg !== 'string') return false;
+          return msg.includes('[vite]') || 
+                 msg === 'CONNECTED' || 
+                 msg === 'Render Start' || 
+                 msg === 'Render End' ||
+                 msg.includes('Render Start') ||
+                 msg.includes('Render End');
+        };
+
+        console.log = function(...args) {
+          if (!shouldSuppress(args)) originalLog.apply(console, args);
+        };
+        console.debug = function(...args) {
+          if (!shouldSuppress(args)) originalDebug.apply(console, args);
+        };
+        console.info = function(...args) {
+          if (!shouldSuppress(args)) originalInfo.apply(console, args);
+        };
+      })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://apis.google.com/js/api.js" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap');
+      
+      body {
+        font-family: 'Nunito', sans-serif;
+        overscroll-behavior-y: none; /* Prevent pull-to-refresh on mobile */
+      }
+      
+      .font-comic {
+        font-family: 'Comic Neue', cursive;
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+
+      .perspective-2000 {
+        perspective: 2000px;
+      }
+      
+      .book-spread {
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.15, 0.45, 0.15, 1);
+      }
+
+      .book-spine {
+        box-shadow: 
+          inset 5px 0 10px rgba(0,0,0,0.1),
+          inset -5px 0 10px rgba(0,0,0,0.1);
+      }
+      
+      .page-shadow {
+         box-shadow: 
+            0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+            0 2px 4px -1px rgba(0, 0, 0, 0.06),
+            inset 10px 0 20px -10px rgba(0,0,0,0.1);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "jspdf": "https://esm.sh/jspdf@2.5.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-50 text-slate-900 overflow-hidden">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
