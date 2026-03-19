@@ -108,10 +108,13 @@ export class LiveCoachSession {
         this.outputNode.connect(this.outputAnalyser);
         this.outputAnalyser.connect(this.outputAudioContext.destination);
 
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error("Microphone access is blocked! Mobile phones require a secure (HTTPS) connection to use the mic. Please test on Desktop localhost, or deploy the app to the web!");
+        }
 
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const sessionPromise = client.live.connect({
-            model: 'gemini-2.5-flash-native-audio-preview-12-2025',
+            model: 'gemini-2.0-flash-exp',
             config: {
                 // Safety settings are not currently supported in LiveConnectConfig
                 responseModalities: [Modality.AUDIO],

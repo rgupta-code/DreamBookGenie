@@ -27,7 +27,7 @@ export const generateStoryPDF = (story: Story) => {
 
   doc.setFontSize(16);
   doc.setTextColor(100, 100, 150);
-  doc.text("Created by Spark-a-Loom", width / 2, height / 2 + 20, { align: "center" });
+  doc.text("Created by DreamBookGenie", width / 2, height / 2 + 20, { align: "center" });
   if (story.createdAt) {
       doc.text(new Date(story.createdAt).toLocaleDateString(), width / 2, height / 2 + 30, { align: "center" });
   }
@@ -107,7 +107,7 @@ export const generateColoringBookPDF = (title: string, images: string[]) => {
   doc.text("A Coloring Book", width / 2, height / 2, { align: "center" });
   
   doc.setFontSize(12);
-  doc.text("Created by Spark-a-Loom", width / 2, height - 30, { align: "center" });
+  doc.text("Created by DreamBookGenie", width / 2, height - 30, { align: "center" });
 
   // Image Pages
   images.forEach((img, index) => {

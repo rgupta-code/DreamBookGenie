@@ -431,7 +431,8 @@ export default function App() {
                 <Settings className={`w-6 h-6 ${showSettings ? 'animate-spin-slow' : ''}`} />
              </button>
 
-             <div className="flex justify-center mb-3 z-20 shrink-0 mt-[max(1rem,env(safe-area-inset-top))] md:mt-0">
+             {/* Desktop Navigation */}
+             <div className="hidden md:flex justify-center mb-3 z-20 shrink-0 mt-[max(1rem,env(safe-area-inset-top))] md:mt-0">
                  <div className="bg-white/80 backdrop-blur-md p-1.5 rounded-full flex gap-3 shadow-lg border border-white/50 overflow-x-auto no-scrollbar">
                      <button onClick={() => setActiveTab('home')} className={`px-6 py-4 rounded-full font-black text-xl transition-all flex items-center gap-3 whitespace-nowrap ${activeTab === 'home' ? 'bg-indigo-600 text-white shadow-md' : 'text-indigo-900/60 hover:bg-indigo-50 hover:text-indigo-900'}`}><Home className="w-6 h-6" /> Home</button>
                      <button onClick={() => setActiveTab('story')} className={`px-6 py-4 rounded-full font-black text-xl transition-all flex items-center gap-3 whitespace-nowrap ${activeTab === 'story' ? 'bg-indigo-600 text-white shadow-md' : 'text-indigo-900/60 hover:bg-indigo-50 hover:text-indigo-900'}`}><Sparkles className="w-6 h-6" /> Create Story</button>
@@ -442,7 +443,33 @@ export default function App() {
                  </div>
              </div>
 
-             <div className="flex-1 overflow-hidden min-h-0 relative flex flex-col">
+             {/* Mobile Bottom Navigation */}
+             <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-indigo-100 z-50 pb-[max(0rem,env(safe-area-inset-bottom))] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+                 <div className="flex justify-around items-center p-2">
+                     <button onClick={() => setActiveTab('home')} className={`flex flex-col items-center p-2 rounded-xl transition-all ${activeTab === 'home' ? 'text-indigo-600 scale-110' : 'text-indigo-300 hover:text-indigo-400'}`}>
+                         <Home className="w-6 h-6 mb-1" />
+                         <span className="text-[10px] font-bold">Home</span>
+                     </button>
+                     <button onClick={() => setActiveTab('story')} className={`flex flex-col items-center p-2 rounded-xl transition-all ${activeTab === 'story' ? 'text-indigo-600 scale-110' : 'text-indigo-300 hover:text-indigo-400'}`}>
+                         <Sparkles className="w-6 h-6 mb-1" />
+                         <span className="text-[10px] font-bold">Story</span>
+                     </button>
+                     <button onClick={() => setActiveTab('learning')} className={`flex flex-col items-center p-2 rounded-xl transition-all ${activeTab === 'learning' ? 'text-sky-600 scale-110' : 'text-sky-300 hover:text-sky-400'}`}>
+                         <GraduationCap className="w-6 h-6 mb-1" />
+                         <span className="text-[10px] font-bold">Learn</span>
+                     </button>
+                     <button onClick={() => setActiveTab('coloring')} className={`flex flex-col items-center p-2 rounded-xl transition-all ${activeTab === 'coloring' ? 'text-[#892b64] scale-110' : 'text-indigo-300 hover:text-[#892b64]'}`}>
+                         <Palette className="w-6 h-6 mb-1" />
+                         <span className="text-[10px] font-bold">Color</span>
+                     </button>
+                     <button onClick={() => setActiveTab('library')} className={`flex flex-col items-center p-2 rounded-xl transition-all ${activeTab === 'library' ? 'text-indigo-600 scale-110' : 'text-indigo-300 hover:text-indigo-400'}`}>
+                         <Library className="w-6 h-6 mb-1" />
+                         <span className="text-[10px] font-bold">Library</span>
+                     </button>
+                 </div>
+             </div>
+
+             <div className="flex-1 overflow-hidden min-h-0 relative flex flex-col pb-[80px] md:pb-0">
                  {activeTab === 'home' ? (
                      <div className="flex-1 overflow-y-auto custom-scrollbar w-full animate-fade-in">
                         <div className="max-w-5xl mx-auto p-4 pb-20">
@@ -880,7 +907,7 @@ export default function App() {
                                   <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Text & Analysis:</span><span className="text-[9px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded">gemini-2.5-flash</span></div>
                                   <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Image:</span><span className="text-[9px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded">gemini-2.5-flash-image</span></div>
                                   <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Audio (TTS):</span><span className="text-[8px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded">gemini-2.5-flash-preview-tts</span></div>
-                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Voice Coach:</span><span className="text-[8px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded whitespace-nowrap overflow-hidden text-ellipsis" title="gemini-2.5-flash-native-audio-preview-12-2025">gemini...native-audio</span></div>
+                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Voice Coach:</span><span className="text-[8px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded whitespace-nowrap overflow-hidden text-ellipsis" title="gemini-2.0-flash-exp">gemini-2.0-flash-exp</span></div>
                               </div>
                           </button>
                           <button 

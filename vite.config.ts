@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => {
     // Load env file based on `mode` in the current working directory.
@@ -27,13 +28,43 @@ export default defineConfig(({ mode }) => {
     } catch (e) {
         console.error("Error reading .env.local:", e);
     }
-    
     return {
+      base: '/DreamBookGenie/',
       server: {
         port: 3000,
         host: '0.0.0.0',
       },
-      plugins: [react()],
+      plugins: [
+        react(),
+        VitePWA({
+          registerType: 'autoUpdate',
+          includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+          manifest: {
+            name: 'DreamBookGenie',
+            short_name: 'DreamBook',
+            description: 'AI-Powered Magical Storybooks for Kids',
+            theme_color: '#a855f7',
+            icons: [
+              {
+                src: 'pwa-192x192.png',
+                sizes: '192x192',
+                type: 'image/png'
+              },
+              {
+                src: 'pwa-512x512.png',
+                sizes: '512x512',
+                type: 'image/png'
+              },
+              {
+                src: 'pwa-512x512.png',
+                sizes: '512x512',
+                type: 'image/png',
+                purpose: 'any maskable'
+              }
+            ]
+          }
+        })
+      ],
       define: {
         'process.env.API_KEY': JSON.stringify(env.API_KEY || env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || env.API_KEY),

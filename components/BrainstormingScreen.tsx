@@ -227,7 +227,9 @@ const BrainstormingScreen: React.FC<BrainstormingScreenProps> = ({ onFinish, onC
         },
         onError: (e: any) => {
           console.error("Brainstorming error:", e);
-          if (e.message?.includes("Permission denied")) {
+          if (e.message?.includes("HTTPS") || e.message?.includes("Microphone access is blocked")) {
+              setErrorMessage(e.message);
+          } else if (e.message?.includes("Permission denied")) {
               setErrorMessage("The Dreaming Chamber needs to hear your story ideas! Please enable your microphone in the browser settings.");
           } else {
               setErrorMessage("Something went wrong with the magic. Please try again!");
