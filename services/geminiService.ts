@@ -5,7 +5,7 @@ import { Story, StoryRequest, ProgressEntry } from "../types";
 
 const getApiKey = () => {
   // Uses the user-provided key if available (Paid Mode), otherwise uses the default env key (Free Mode)
-  return localStorage.getItem('gemini_api_key') || process.env.GEMINI_API_KEY;
+  return localStorage.getItem('gemini_api_key') || (import.meta as any).env.VITE_GEMINI_API_KEY;
 };
 
 // Use enums for safety settings categories and thresholds to satisfy type requirements
@@ -62,7 +62,7 @@ export const validateApiKey = async (key: string): Promise<boolean> => {
     const ai = new GoogleGenAI({ apiKey: key });
     // Use a simple generation request to test the key with a lightweight model
     const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-2.5-flash',
         contents: { parts: [{ text: "ping" }] },
     });
     // Check if we got a valid response object
@@ -98,19 +98,10 @@ const getModelTier = () => {
   const isPaid = localStorage.getItem('magic_storybook_is_paid') === 'true';
   
   return {
-    // Text Tasks: 3.1 Pro for high-level creative storytelling; 3 Flash for speed/cost.
-    text: isPaid ? 'gemini-3.1-pro-preview' : 'gemini-3-flash-preview',
-    
-    // Image Tasks: Nano Banana Pro (3 Pro Image) for high-quality book art; 
-    // Nano Banana 2 (3.1 Flash Image) for fast, consistent generation.
-    image: isPaid ? 'gemini-3-pro-image-preview' : 'gemini-2.5-flash-image',
-    
-    // TTS Tasks: 2.5 Pro TTS offers higher fidelity for narration; 
-    // 2.5 Flash TTS is optimized for low-latency interactive dialogue.
-    tts: isPaid ? 'gemini-2.5-flash-preview-tts' : 'gemini-2.5-flash-preview-tts',
-    
-    // Analysis Tasks: 3.1 Pro for complex story logic/branching; 3 Flash for basic summaries.
-    analysis: isPaid ? 'gemini-3.1-pro-preview' : 'gemini-3-flash-preview'
+    text: 'gemini-2.5-flash',
+    image: 'gemini-2.5-flash-image',
+    tts: 'gemini-2.5-flash-preview-tts',
+    analysis: 'gemini-2.5-flash'
   };
 };
 
@@ -271,7 +262,7 @@ export const generateImageForPage = async (prompt: string, style: string, refere
   }
 
   try {
-    const isPro = model === 'gemini-3-pro-image-preview';
+    const isPro = model === 'gemini-2.5-pro-image';
     const response = await callGenAIWithRetry<GenerateContentResponse>(() => ai.models.generateContent({
       model: model,
       contents: { parts },
@@ -350,7 +341,7 @@ export const generateColoringBookImages = async (topic: string, ageGroup: string
       }
 
       try {
-        const isPro = model === 'gemini-3-pro-image-preview';
+        const isPro = model === 'gemini-2.5-pro-image';
         const response = await callGenAIWithRetry<GenerateContentResponse>(() => ai.models.generateContent({
             model: model,
             contents: { parts },

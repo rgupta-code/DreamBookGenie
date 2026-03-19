@@ -4,7 +4,7 @@ import { Story, ProgressEntry } from "../types";
 const URL_KEY = 'magic_storybook_script_url';
 const LIBRARY_CACHE_KEY = 'magic_storybook_library_cache';
 
-const getDefaultUrl = () => import.meta.env.VITE_DEFAULT_SCRIPT_URL || "";
+const getDefaultUrl = () => (import.meta as any).env.VITE_DEFAULT_SCRIPT_URL || "";
 
 export const isConfigured = () => !!(localStorage.getItem(URL_KEY) || getDefaultUrl());
 export const hasCustomUrl = () => !!localStorage.getItem(URL_KEY);

@@ -97,7 +97,7 @@ export class LiveCoachSession {
     }
 
     async connect(initialContext: string, systemInstruction: string, voiceName: string = 'Kore') {
-        const apiKey = localStorage.getItem('gemini_api_key') || process.env.API_KEY;
+        const apiKey = localStorage.getItem('gemini_api_key') || (import.meta as any).env.VITE_GEMINI_API_KEY;
         const client = new GoogleGenAI({ apiKey: apiKey });
         
         this.inputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
