@@ -99,7 +99,8 @@ export const testConnection = async (url: string): Promise<{ success: boolean; m
         const pingUrl = `${url}${url.includes('?') ? '&' : '?'}action=ping`;
         const response = await fetch(pingUrl, {
             method: 'GET',
-            redirect: 'follow'
+            redirect: 'follow',
+            credentials: 'omit'
         });
         
         if (response.status === 401 || response.status === 403) {
@@ -148,7 +149,8 @@ export const saveStoryToLibrary = async (story: Story, skipDrive: boolean = fals
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({ action: 'save', story: storyToSave }),
-                redirect: 'follow'
+                redirect: 'follow',
+                credentials: 'omit'
             });
 
         if (response.status === 401 || response.status === 403) {
@@ -176,7 +178,7 @@ export const getAllStories = async (): Promise<Story[]> => {
     }
     
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, { credentials: 'omit' });
         if (!response.ok) throw new Error("Failed to fetch library");
         
         const json = await response.json();
@@ -222,6 +224,7 @@ export const deleteStory = async (id: string): Promise<void> => {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({ action: 'delete', id }),
+            credentials: 'omit'
         });
     } catch (e) {}
 };
@@ -232,7 +235,7 @@ export const getAllProgress = async (): Promise<ProgressEntry[]> => {
         return [];
     }
     try {
-        const response = await fetch(`${url}${url.includes('?') ? '&' : '?'}action=getProgress`);
+        const response = await fetch(`${url}${url.includes('?') ? '&' : '?'}action=getProgress`, { credentials: 'omit' });
         const json = await response.json();
         return json.progress || [];
     } catch (e) { return []; }
@@ -248,6 +251,7 @@ export const saveProgressToLibrary = async (progress: ProgressEntry): Promise<vo
             method: 'POST',
             headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({ action: 'saveProgress', progress }),
+            credentials: 'omit'
         });
     } catch (e) {}
 };
