@@ -588,58 +588,58 @@ export default function App() {
                             <h2 className="text-2xl font-black text-indigo-900 mb-6 flex items-center gap-2 px-2">
                                 <Compass className="w-6 h-6 text-indigo-500" /> Explore
                             </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-                                <div onClick={() => setActiveTab('story')} className="bg-white p-6 rounded-[2rem] shadow-sm hover:shadow-xl transition-all cursor-pointer group border border-indigo-50 hover:border-indigo-100">
-                                    <div className="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                        <Sparkles className="w-7 h-7 text-indigo-600" />
+                            <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4 mb-8 md:mb-12">
+                                <div onClick={() => setActiveTab('story')} className="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-xl transition-all cursor-pointer group border border-indigo-50 hover:border-indigo-100 flex flex-col items-center md:items-start text-center md:text-left">
+                                    <div className="w-12 h-12 md:w-14 md:h-14 bg-indigo-100 rounded-xl md:rounded-2xl flex items-center justify-center mb-2 md:mb-4 group-hover:scale-110 transition-transform">
+                                        <Sparkles className="w-6 h-6 md:w-7 md:h-7 text-indigo-600" />
                                     </div>
-                                    <h3 className="text-2xl font-black text-indigo-900 mb-2">Create a Story</h3>
-                                    <p className="text-slate-500 font-bold text-sm">Invent characters and go on magical adventures.</p>
+                                    <h3 className="text-[15px] md:text-2xl font-black text-indigo-900 mb-1 md:mb-2">Create a Story</h3>
+                                    <p className="hidden md:block text-slate-500 font-bold text-sm">Invent characters and go on magical adventures.</p>
                                 </div>
                                 
-                                <div onClick={() => setActiveTab('learning')} className="bg-white p-6 rounded-[2rem] shadow-sm hover:shadow-xl transition-all cursor-pointer group border border-sky-50 hover:border-sky-100">
-                                    <div className="w-14 h-14 bg-sky-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                        <GraduationCap className="w-7 h-7 text-sky-600" />
+                                <div onClick={() => setActiveTab('learning')} className="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-xl transition-all cursor-pointer group border border-sky-50 hover:border-sky-100 flex flex-col items-center md:items-start text-center md:text-left">
+                                    <div className="w-12 h-12 md:w-14 md:h-14 bg-sky-100 rounded-xl md:rounded-2xl flex items-center justify-center mb-2 md:mb-4 group-hover:scale-110 transition-transform">
+                                        <GraduationCap className="w-6 h-6 md:w-7 md:h-7 text-sky-600" />
                                     </div>
-                                    <h3 className="text-2xl font-black text-sky-900 mb-2">Learn a Topic</h3>
-                                    <p className="text-slate-500 font-bold text-sm">Discover fun facts about space, animals, and more.</p>
+                                    <h3 className="text-[15px] md:text-2xl font-black text-sky-900 mb-1 md:mb-2">Learn a Topic</h3>
+                                    <p className="hidden md:block text-slate-500 font-bold text-sm">Discover fun facts about space, animals, and more.</p>
                                 </div>
 
-                                <div onClick={() => setActiveTab('coloring')} className="bg-white p-6 rounded-[2rem] shadow-sm hover:shadow-xl transition-all cursor-pointer group border border-[#892b64]/20 hover:border-[#892b64]/40">
-                                    <div className="w-14 h-14 bg-[#892b64]/10 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                        <Palette className="w-7 h-7 text-[#892b64]" />
+                                <div onClick={() => setActiveTab('coloring')} className="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-xl transition-all cursor-pointer group border border-[#892b64]/20 hover:border-[#892b64]/40 flex flex-col items-center md:items-start text-center md:text-left">
+                                    <div className="w-12 h-12 md:w-14 md:h-14 bg-[#892b64]/10 rounded-xl md:rounded-2xl flex items-center justify-center mb-2 md:mb-4 group-hover:scale-110 transition-transform">
+                                        <Palette className="w-6 h-6 md:w-7 md:h-7 text-[#892b64]" />
                                     </div>
-                                    <h3 className="text-2xl font-black text-[#892b64] mb-2">Coloring Books</h3>
-                                    <p className="text-slate-500 font-bold text-sm">Print your own custom coloring pages.</p>
+                                    <h3 className="text-[15px] md:text-2xl font-black text-[#892b64] mb-1 md:mb-2">Coloring Books</h3>
+                                    <p className="hidden md:block text-slate-500 font-bold text-sm">Print your own custom coloring pages.</p>
                                 </div>
 
-                                <div onClick={() => setActiveTab('tracking')} className="bg-white p-6 rounded-[2rem] shadow-sm hover:shadow-xl transition-all cursor-pointer group border border-green-50 hover:border-green-100">
-                                    <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                        <TrendingUp className="w-7 h-7 text-green-600" />
+                                <div onClick={() => setActiveTab('tracking')} className="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-xl transition-all cursor-pointer group border border-green-50 hover:border-green-100 flex flex-col items-center md:items-start text-center md:text-left">
+                                    <div className="w-12 h-12 md:w-14 md:h-14 bg-green-100 rounded-xl md:rounded-2xl flex items-center justify-center mb-2 md:mb-4 group-hover:scale-110 transition-transform">
+                                        <TrendingUp className="w-6 h-6 md:w-7 md:h-7 text-green-600" />
                                     </div>
-                                    <h3 className="text-2xl font-black text-green-900 mb-2">Reading Journal</h3>
-                                    <p className="text-slate-500 font-bold text-sm">Track your progress and earn badges.</p>
+                                    <h3 className="text-[15px] md:text-2xl font-black text-green-900 mb-1 md:mb-2">Reading Journal</h3>
+                                    <p className="hidden md:block text-slate-500 font-bold text-sm">Track your progress and earn badges.</p>
                                 </div>
                             </div>
 
                             {/* How it Works */}
-                            <div className="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-lg border border-indigo-50 mb-12">
-                                <h2 className="text-2xl font-black text-indigo-900 mb-8 text-center">How Magic Happens</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="bg-white rounded-[1.5rem] md:rounded-[2.5rem] p-5 md:p-10 shadow-lg border border-indigo-50 mb-8 md:mb-12">
+                                <h2 className="text-xl md:text-2xl font-black text-indigo-900 mb-5 md:mb-8 text-center">How Magic Happens</h2>
+                                <div className="grid grid-cols-3 gap-2 md:gap-8 justify-between">
                                     <div className="flex flex-col items-center text-center">
-                                        <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-4 text-2xl font-black text-pink-500">1</div>
-                                        <h4 className="text-lg font-black text-indigo-900 mb-2">Dream It</h4>
-                                        <p className="text-slate-500 font-bold text-sm">Type a topic or use your voice to brainstorm ideas with our magic star.</p>
+                                        <div className="w-10 h-10 md:w-16 md:h-16 bg-pink-100 rounded-full flex items-center justify-center mb-2 md:mb-4 text-lg md:text-2xl font-black text-pink-500">1</div>
+                                        <h4 className="text-[12px] md:text-lg font-black text-indigo-900 mb-1 md:mb-2">Dream It</h4>
+                                        <p className="hidden md:block text-slate-500 font-bold text-sm">Type a topic or use your voice to brainstorm ideas with our magic star.</p>
                                     </div>
                                     <div className="flex flex-col items-center text-center">
-                                        <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4 text-2xl font-black text-yellow-600">2</div>
-                                        <h4 className="text-lg font-black text-indigo-900 mb-2">Create It</h4>
-                                        <p className="text-slate-500 font-bold text-sm">Watch as AI writes the story and paints beautiful pictures for every page.</p>
+                                        <div className="w-10 h-10 md:w-16 md:h-16 bg-yellow-100 rounded-full flex items-center justify-center mb-2 md:mb-4 text-lg md:text-2xl font-black text-yellow-600">2</div>
+                                        <h4 className="text-[12px] md:text-lg font-black text-indigo-900 mb-1 md:mb-2">Create It</h4>
+                                        <p className="hidden md:block text-slate-500 font-bold text-sm">Watch as AI writes the story and paints beautiful pictures for every page.</p>
                                     </div>
                                     <div className="flex flex-col items-center text-center">
-                                        <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-4 text-2xl font-black text-indigo-600">3</div>
-                                        <h4 className="text-lg font-black text-indigo-900 mb-2">Read It</h4>
-                                        <p className="text-slate-500 font-bold text-sm">Read along, click words for help, or listen to the story narrator.</p>
+                                        <div className="w-10 h-10 md:w-16 md:h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-2 md:mb-4 text-lg md:text-2xl font-black text-indigo-600">3</div>
+                                        <h4 className="text-[12px] md:text-lg font-black text-indigo-900 mb-1 md:mb-2">Read It</h4>
+                                        <p className="hidden md:block text-slate-500 font-bold text-sm">Read along, click words for help, or listen to the story narrator.</p>
                                     </div>
                                 </div>
                             </div>
