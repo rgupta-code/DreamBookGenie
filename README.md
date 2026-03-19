@@ -1,12 +1,9 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+
 
 # DreamBookGenie
 
 The #1 Magical Storyteller for Kids — create personalized picture books, learn new topics, and practice reading with your very own AI coach.
-
-View your app in AI Studio: https://ai.studio/apps/7333246d-8e84-45a3-911d-dbccb87ba6db
 
 ---
 
