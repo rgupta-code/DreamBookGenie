@@ -279,15 +279,33 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
 
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const touchEndY = useRef<number | null>(null);
 
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
-  const handleTouchMove = (e: React.TouchEvent) => { touchEndX.current = e.touches[0].clientX; };
+  const [swipeDirection, setSwipeDirection] = useState<'left'|'right'>('right');
+
+  const handleTouchStart = (e: React.TouchEvent) => { 
+      touchStartX.current = e.touches[0].clientX; 
+      touchStartY.current = e.touches[0].clientY; 
+  };
+  const handleTouchMove = (e: React.TouchEvent) => { 
+      touchEndX.current = e.touches[0].clientX; 
+      touchEndY.current = e.touches[0].clientY; 
+  };
   const handleTouchEnd = () => {
       if (touchStartX.current === null || touchEndX.current === null) return;
-      const dist = touchStartX.current - touchEndX.current;
-      if (dist > 50) { goNext(); } else if (dist < -50) { goPrev(); }
+      const distX = touchStartX.current - touchEndX.current;
+      const distY = (touchStartY.current || 0) - (touchEndY.current || 0);
+      
+      // Ensure horizontal swipe is dominant and significant
+      if (Math.abs(distX) > Math.abs(distY) && Math.abs(distX) > 40) {
+          if (distX > 0) goNext(); 
+          else goPrev();
+      }
       touchStartX.current = null;
       touchEndX.current = null;
+      touchStartY.current = null;
+      touchEndY.current = null;
   };
 
   const isSinglePage = windowWidth < 1024;
@@ -325,6 +343,7 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
   }, [singlePageIndex, flippedIndex]);
 
   const goNext = () => {
+      setSwipeDirection('right');
       if (audioRef.current) {
           audioRef.current.pause();
           setIsPlaying(false);
@@ -337,6 +356,7 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
   };
 
   const goPrev = () => {
+      setSwipeDirection('left');
       if (audioRef.current) {
           audioRef.current.pause();
           setIsPlaying(false);
@@ -930,24 +950,26 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
-                    className="w-[calc(100%-24px)] ml-6 h-full max-w-lg aspect-[4/5] bg-white rounded-r-2xl rounded-l-md shadow-2xl relative border border-slate-100 flex flex-col"
+                    className="w-full max-w-lg aspect-[4/5] bg-white rounded-r-2xl rounded-l-md shadow-2xl relative border border-slate-100 flex flex-col ml-8 mr-2 pointer-events-auto shrink-0"
                 >
                     {/* Spiral Binding */}
-                    <div className="absolute top-0 bottom-0 left-[-22px] w-[36px] z-50 flex flex-col justify-evenly py-8 pointer-events-none">
+                    <div className="absolute top-0 bottom-0 left-[-20px] w-[36px] z-[60] flex flex-col justify-evenly py-6 pointer-events-none">
                         {Array.from({length: 12}).map((_, i) => (
-                            <div key={i} className="flex items-center w-full relative h-[10px]">
-                                <div className="absolute left-[2px] w-[10px] h-[10px] rounded-full shadow-inner bg-slate-800"></div>
-                                <div className="absolute left-[8px] right-[8px] h-[6px] top-[2px] bg-gradient-to-b from-slate-200 via-slate-50 to-slate-300 rounded-full shadow-md z-10 border border-slate-400"></div>
-                                <div className="absolute right-[2px] w-[10px] h-[10px] rounded-full shadow-inner bg-slate-800"></div>
+                            <div key={i} className="flex items-center w-full relative h-[12px] opacity-90">
+                                <div className="absolute left-[2px] w-[12px] h-[12px] rounded-full shadow-inner bg-slate-800"></div>
+                                <div className="absolute left-[8px] right-[8px] h-[8px] top-[2px] bg-gradient-to-b from-slate-300 via-slate-100 to-slate-400 rounded-full shadow-md z-10 border border-slate-400"></div>
+                                <div className="absolute right-[2px] w-[12px] h-[12px] rounded-full shadow-inner bg-slate-800"></div>
                             </div>
                         ))}
                     </div>
                     {/* Content Layer */}
-                    <div className="w-full h-full overflow-hidden relative rounded-r-2xl z-10">
-                        {singlePageIndex === 0 && <PageContent type="title" storyTitle={story.title} active={true} mode={story.mode} isSinglePage={true} watermarkImage={story.pages[0]?.imageUrl} />}
-                        {singlePageIndex > 0 && singlePageIndex <= story.pages.length && (<PageContent type="story" page={story.pages[singlePageIndex-1]} pageNumber={singlePageIndex} active={true} ageGroup={story.ageGroup} mode={story.mode} isListening={listeningIdx === (singlePageIndex-1)} correctIndices={correctIndices} missedCounts={missedCounts} onToggleListening={() => toggleListening(singlePageIndex-1)} isSinglePage={true} isWandMode={isWandMode} onWordClick={handleWordClick} />)}
-                        {singlePageIndex === story.pages.length + 1 && <PageContent type="the-end" active={true} isSinglePage={true} />}
-                        {singlePageIndex === story.pages.length + 2 && (<PageContent type="end" active={true} analysis={analysis} onHome={onHome} onReadAgain={handleReadAgain} onSave={() => handleSave()} isSaving={isSaving} hasSaved={hasSaved} onCreateBonusStory={onCreateBonusStory} isSinglePage={true} />)}
+                    <div className="w-full h-full overflow-hidden relative rounded-r-2xl z-10 bg-white">
+                        <div key={singlePageIndex} className={`w-full h-full ${swipeDirection === 'right' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`}>
+                            {singlePageIndex === 0 && <PageContent type="title" storyTitle={story.title} active={true} mode={story.mode} isSinglePage={true} watermarkImage={story.pages[0]?.imageUrl} />}
+                            {singlePageIndex > 0 && singlePageIndex <= story.pages.length && (<PageContent type="story" page={story.pages[singlePageIndex-1]} pageNumber={singlePageIndex} active={true} ageGroup={story.ageGroup} mode={story.mode} isListening={listeningIdx === (singlePageIndex-1)} correctIndices={correctIndices} missedCounts={missedCounts} onToggleListening={() => toggleListening(singlePageIndex-1)} isSinglePage={true} isWandMode={isWandMode} onWordClick={handleWordClick} />)}
+                            {singlePageIndex === story.pages.length + 1 && <PageContent type="the-end" active={true} isSinglePage={true} />}
+                            {singlePageIndex === story.pages.length + 2 && (<PageContent type="end" active={true} analysis={analysis} onHome={onHome} onReadAgain={handleReadAgain} onSave={() => handleSave()} isSaving={isSaving} hasSaved={hasSaved} onCreateBonusStory={onCreateBonusStory} isSinglePage={true} />)}
+                        </div>
                     </div>
                 </div>
             ) : (
@@ -1070,8 +1092,12 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
         <style>{`
             .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; } 
             .animate-slide-up { animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; } 
+            .animate-slide-in-right { animation: slideInRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+            .animate-slide-in-left { animation: slideInLeft 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
             @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } 
             @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } 
+            @keyframes slideInRight { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+            @keyframes slideInLeft { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
             .custom-scrollbar::-webkit-scrollbar { width: 4px; } 
             .custom-scrollbar::-webkit-scrollbar-thumb { background: #e0e7ff; border-radius: 10px; } 
             @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } } 
