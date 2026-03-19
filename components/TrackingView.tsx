@@ -184,7 +184,6 @@ const TrackingView: React.FC<TrackingViewProps> = ({ onSelectTopic }) => {
                                             <span className="text-[10px] font-black text-slate-400 uppercase">Accuracy</span>
                                             <span className="text-2xl font-black text-sky-500">{entry.accuracy}</span>
                                         </div>
-                                        <button onClick={() => onSelectTopic(entry.suggestion)} className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm group-hover:translate-x-1"><ChevronRight className="w-6 h-6" /></button>
                                     </div>
                                 </div>
                             </div>

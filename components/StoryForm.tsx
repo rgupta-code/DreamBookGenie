@@ -38,34 +38,34 @@ const AGE_GROUPS = [
 const AGE_APPROPRIATE_IDEAS: Record<string, { story: string[], learning: string[] }> = {
   "Toddler (1-3 years)": {
     story: [
-      "The Soft Blue Blanket", "Puppy's Big Day", "The Squeaky Mouse", "Happy Little Cloud", "Duckling's First Swim", "The Sleepy Bear", "Funny Red Ball", "Kitten's Secret Hideout"
+      "The Soft Blue Blanket", "Puppy's Big Day", "The Squeaky Mouse", "Happy Little Cloud", "Duckling's First Swim", "The Sleepy Bear", "Funny Red Ball", "Kitten's Secret Hideout", "The Playful Bunny", "Baby Elephant's Bath", "The Magic Bubbles", "Panda's Bamboo Breakfast"
     ],
     learning: [
-      "Red, Blue, and Yellow", "Big and Small", "Farm Animal Sounds", "The Happy Sun", "My Five Fingers", "Shapes All Around", "Counting 1 to 5", "Fruit Colors"
+      "Red, Blue, and Yellow", "Big and Small", "Farm Animal Sounds", "The Happy Sun", "My Five Fingers", "Shapes All Around", "Counting 1 to 5", "Fruit Colors", "Wheels on the Bus", "Up and Down", "Fast and Slow", "Where is Nose?"
     ]
   },
   "Preschool (3-5 years)": {
     story: [
-      "The Dinosaur's Picnic", "The Girl Who Could Fly", "The Magic Treehouse", "Sharing the Big Apple", "A Cat that Speaks Spanish", "The Kingdom of Candy Clouds", "Detective Bunny's Case", "The Star in a Jar"
+      "The Dinosaur's Picnic", "The Girl Who Could Fly", "The Magic Treehouse", "Sharing the Big Apple", "A Cat that Speaks Spanish", "The Kingdom of Candy Clouds", "Detective Bunny's Case", "The Star in a Jar", "The Dragon Who Was Afraid of Fire", "The Runaway Pancake", "A Rocket Built of Cardboard", "The Monster Under the Bed Means No Harm"
     ],
     learning: [
-      "The Life of a Bee", "How Rain Happens", "Why We Eat Veggies", "The 5 Senses", "Day and Night", "Under the Deep Sea", "Different Kinds of Trucks", "How Seeds Grow"
+      "The Life of a Bee", "How Rain Happens", "Why We Eat Veggies", "The 5 Senses", "Day and Night", "Under the Deep Sea", "Different Kinds of Trucks", "How Seeds Grow", "What Are Shadows?", "Why We Brush Our Teeth", "The Seasons of the Year", "Jobs People Do"
     ]
   },
   "School Age (5-8 years)": {
     story: [
-      "Island of Mechanical Toys", "The Secret of the Whispering Woods", "Detective Bunny's Big Case", "The Time-Traveling Toaster", "A Giraffe with a Short Neck", "The Robot's Garden", "Brave Toaster's Forest Hike", "The Invisible Castle"
+      "Island of Mechanical Toys", "The Secret of the Whispering Woods", "Detective Bunny's Big Case", "The Time-Traveling Toaster", "A Giraffe with a Short Neck", "The Robot's Garden", "Brave Toaster's Forest Hike", "The Invisible Castle", "The Boy Who Painted Dreams", "The Magic Skateboard", "The Lost City of Atlantis", "The Pirate Who Only Stole Books"
     ],
     learning: [
-      "How Volcanoes Erupt", "The Solar System Journey", "Ancient Egyptian Pyramids", "The Secret Life of Trees", "What is Gravity?", "How Electricity Works", "The Cycle of Water", "How Planes Fly"
+      "How Volcanoes Erupt", "The Solar System Journey", "Ancient Egyptian Pyramids", "The Secret Life of Trees", "What is Gravity?", "How Electricity Works", "The Cycle of Water", "How Planes Fly", "The History of Chocolate", "How the Internet Works", "The Human Skeleton", "Why Do Leaves Change Color?"
     ]
   },
   "Pre-teen (9-12 years)": {
     story: [
-      "The Quantum Library", "Lost in the Digital Maze", "The Last Starship to Earth", "Mystery of the Clockwork Kingdom", "The Girl with the Bio-Arm", "Escape from Paradox City", "The AI that Wrote a Poem", "Echoes of the Void"
+      "The Quantum Library", "Lost in the Digital Maze", "The Last Starship to Earth", "Mystery of the Clockwork Kingdom", "The Girl with the Bio-Arm", "Escape from Paradox City", "The AI that Wrote a Poem", "Echoes of the Void", "The Boy Who Remembered Tomorrow", "City of Floating Islands", "The Chrono-Thief", "The Code-Breakers of Mars"
     ],
     learning: [
-      "Artificial Intelligence", "Deep Sea Creatures", "History of Video Games", "How DNA Works", "The Human Brain", "Black Holes Explained", "Renewable Energy", "The Renaissance"
+      "Artificial Intelligence", "Deep Sea Creatures", "History of Video Games", "How DNA Works", "The Human Brain", "Black Holes Explained", "Renewable Energy", "The Renaissance", "The Industrial Revolution", "How Cryptography Works", "The Psychology of Habits", "The Space Race"
     ]
   }
 };
@@ -523,10 +523,10 @@ const StoryForm: React.FC<StoryFormProps> = ({ mode, onSubmit, isLoading, initia
                         <button 
                             type="button" 
                             onClick={refreshIdeas}
-                            className="p-1 hover:bg-slate-100 rounded-full transition-colors text-slate-400"
+                            className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-indigo-500 border border-slate-100 hover:border-indigo-200"
                             title="More Ideas"
                         >
-                            <RefreshCw className="w-3 h-3" />
+                            <RefreshCw className="w-4 h-4" />
                         </button>
                     </div>
                     <div className="flex flex-wrap gap-2">

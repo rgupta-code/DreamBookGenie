@@ -183,7 +183,7 @@ const PageContent: React.FC<any> = ({ page, type, storyTitle, pageNumber, active
             <h2 className="text-4xl md:text-6xl font-comic font-bold text-indigo-600">The End</h2>
         </div>
     );
-    if (type === 'end') return <div className="w-full h-full flex flex-col items-center justify-center bg-white p-6 md:p-10 text-center overflow-y-auto custom-scrollbar relative z-10">{analysis ? (<div className="my-4 text-left bg-indigo-50 p-4 md:p-6 rounded-[1.5rem] border-2 border-indigo-100 w-full animate-fade-in shadow-sm"><h3 className="font-bold text-indigo-800 mb-2 flex items-center gap-2"><Sparkles className="w-5 h-5" /> Reading Journey</h3><p className="text-slate-800 text-xs md:text-base mb-4 leading-relaxed font-bold">{analysis.summary}</p>{onCreateBonusStory && (<button onClick={() => onCreateBonusStory(analysis.practiceTopic)} className="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] transition-all text-xs"><Wand2 className="w-4 h-4" /> Magic Bonus Chapter</button>)}</div>) : (<div className="my-10 flex flex-col items-center gap-4"><Loader2 className="w-8 h-8 animate-spin text-indigo-300" /><p className="text-slate-400 font-bold text-sm">Brewing Wisdom...</p></div>)}<div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 w-full mt-auto pt-6"><button onClick={onReadAgain} className="py-3 px-4 bg-white border-2 border-indigo-100 text-indigo-600 rounded-xl font-bold flex items-center justify-center gap-2 text-xs hover:bg-indigo-50 transition-colors shadow-sm"><RotateCcw className="w-4 h-4" /> Read Again</button><button onClick={onSave} disabled={hasSaved || isSaving} className={`py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 text-xs transition-all shadow-sm ${hasSaved ? 'bg-green-50 text-green-600 border-2 border-green-200 cursor-default' : 'bg-white border-2 border-indigo-100 text-indigo-600 hover:bg-indigo-50'}`}>{isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : hasSaved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}{hasSaved ? "Saved!" : "Save to Library"}</button><button onClick={onHome} className="md:col-span-2 py-3 bg-indigo-600 text-white rounded-xl font-bold text-base hover:bg-indigo-700 transition-colors shadow-lg">Go Home</button></div></div>;
+    if (type === 'end') return <div className="w-full h-full flex flex-col items-center justify-center bg-white p-6 md:p-10 text-center overflow-y-auto custom-scrollbar relative z-10">{analysis ? (<div className="my-4 text-left bg-indigo-50 p-4 md:p-6 rounded-[1.5rem] border-2 border-indigo-100 w-full animate-fade-in shadow-sm"><h3 className="font-bold text-indigo-800 mb-2 flex items-center gap-2"><Sparkles className="w-5 h-5" /> Reading Journey</h3><p className="text-slate-800 text-xs md:text-base mb-4 leading-relaxed font-bold">{analysis.summary}</p>{onCreateBonusStory && (<button onClick={() => onCreateBonusStory(analysis.practiceTopic)} className="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] transition-all text-xs"><Wand2 className="w-4 h-4" /> Magic Bonus Chapter</button>)}</div>) : (<div className="my-10 flex flex-col items-center gap-4"><Loader2 className="w-8 h-8 animate-spin text-indigo-300" /><p className="text-slate-400 font-bold text-sm">Brewing Wisdom...</p></div>)}<div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 w-full mt-auto pt-6"><button onClick={onReadAgain} className="py-3 px-4 bg-white border-2 border-indigo-100 text-indigo-600 rounded-xl font-bold flex items-center justify-center gap-2 text-xs hover:bg-indigo-50 transition-colors shadow-sm"><RotateCcw className="w-4 h-4" /> Read Again</button>{!hasSaved && <button onClick={onSave} disabled={isSaving} className={`py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 text-xs transition-all shadow-sm bg-white border-2 border-indigo-100 text-indigo-600 hover:bg-indigo-50`}>{isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}Save to Library</button>}<button onClick={onHome} className={`${hasSaved ? 'md:col-span-1' : 'md:col-span-2'} py-3 bg-indigo-600 text-white rounded-xl font-bold text-base hover:bg-indigo-700 transition-colors shadow-lg`}>Go Home</button></div></div>;
     if (!page) return <div className="bg-white w-full h-full" />;
 
     const words = page.text.split(' ');
@@ -276,6 +276,19 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
   const recognitionRef = useRef<any>(null);
   const coachRef = useRef<LiveCoachSession | null>(null);
   const conversationEndRef = useRef<HTMLDivElement>(null);
+
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
+  const handleTouchMove = (e: React.TouchEvent) => { touchEndX.current = e.touches[0].clientX; };
+  const handleTouchEnd = () => {
+      if (touchStartX.current === null || touchEndX.current === null) return;
+      const dist = touchStartX.current - touchEndX.current;
+      if (dist > 50) { goNext(); } else if (dist < -50) { goPrev(); }
+      touchStartX.current = null;
+      touchEndX.current = null;
+  };
 
   const isSinglePage = windowWidth < 1024;
   const allLinearPages = [{ type: 'title', title: story.title }, ...story.pages.map(p => ({ ...p, type: 'story' })), { type: 'the-end', text: '' }, { type: 'end' }];
@@ -819,14 +832,16 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
                 >
                     {isCoachConnecting ? <Loader2 className="w-6 h-6 animate-spin" /> : <UserCircle className="w-6 h-6" />}
                 </button>
-                <button 
-                    onClick={() => handleSave()} 
-                    disabled={isSaving || hasSaved}
-                    className={`p-3.5 rounded-full transition-all border ${hasSaved ? 'bg-green-50 text-green-600 border-2 border-green-200 cursor-default' : 'bg-white text-slate-700 border-slate-100 disabled:opacity-50'} ${btnClass}`}
-                    title="Save to Library"
-                >
-                    {isSaving ? <Loader2 className="w-6 h-6 animate-spin" /> : hasSaved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-                </button>
+                {!hasSaved && (
+                  <button 
+                      onClick={() => handleSave()} 
+                      disabled={isSaving}
+                      className={`p-3.5 rounded-full transition-all border bg-white text-slate-700 border-slate-100 disabled:opacity-50 ${btnClass}`}
+                      title="Save to Library"
+                  >
+                      {isSaving ? <Loader2 className="w-6 h-6 animate-spin" /> : <Save className="w-4 h-4" />}
+                  </button>
+                )}
                 <button 
                     onClick={() => generateStoryPDF(story)} 
                     className={`p-3.5 bg-white rounded-full text-slate-700 border border-slate-100 ${btnClass}`}
@@ -911,11 +926,29 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
             )}
 
             {isSinglePage ? (
-                <div className="w-full h-full max-w-lg aspect-square bg-white rounded-2xl shadow-2xl overflow-hidden relative border border-slate-100">
-                    {singlePageIndex === 0 && <PageContent type="title" storyTitle={story.title} active={true} mode={story.mode} isSinglePage={true} watermarkImage={story.pages[0]?.imageUrl} />}
-                    {singlePageIndex > 0 && singlePageIndex <= story.pages.length && (<PageContent type="story" page={story.pages[singlePageIndex-1]} pageNumber={singlePageIndex} active={true} ageGroup={story.ageGroup} mode={story.mode} isListening={listeningIdx === (singlePageIndex-1)} correctIndices={correctIndices} missedCounts={missedCounts} onToggleListening={() => toggleListening(singlePageIndex-1)} isSinglePage={true} isWandMode={isWandMode} onWordClick={handleWordClick} />)}
-                    {singlePageIndex === story.pages.length + 1 && <PageContent type="the-end" active={true} isSinglePage={true} />}
-                    {singlePageIndex === story.pages.length + 2 && (<PageContent type="end" active={true} analysis={analysis} onHome={onHome} onReadAgain={handleReadAgain} onSave={() => handleSave()} isSaving={isSaving} hasSaved={hasSaved} onCreateBonusStory={onCreateBonusStory} isSinglePage={true} />)}
+                <div 
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    className="w-[calc(100%-24px)] ml-6 h-full max-w-lg aspect-[4/5] bg-white rounded-r-2xl rounded-l-md shadow-2xl relative border border-slate-100 flex flex-col"
+                >
+                    {/* Spiral Binding */}
+                    <div className="absolute top-0 bottom-0 left-[-22px] w-[36px] z-50 flex flex-col justify-evenly py-8 pointer-events-none">
+                        {Array.from({length: 12}).map((_, i) => (
+                            <div key={i} className="flex items-center w-full relative h-[10px]">
+                                <div className="absolute left-[2px] w-[10px] h-[10px] rounded-full shadow-inner bg-slate-800"></div>
+                                <div className="absolute left-[8px] right-[8px] h-[6px] top-[2px] bg-gradient-to-b from-slate-200 via-slate-50 to-slate-300 rounded-full shadow-md z-10 border border-slate-400"></div>
+                                <div className="absolute right-[2px] w-[10px] h-[10px] rounded-full shadow-inner bg-slate-800"></div>
+                            </div>
+                        ))}
+                    </div>
+                    {/* Content Layer */}
+                    <div className="w-full h-full overflow-hidden relative rounded-r-2xl z-10">
+                        {singlePageIndex === 0 && <PageContent type="title" storyTitle={story.title} active={true} mode={story.mode} isSinglePage={true} watermarkImage={story.pages[0]?.imageUrl} />}
+                        {singlePageIndex > 0 && singlePageIndex <= story.pages.length && (<PageContent type="story" page={story.pages[singlePageIndex-1]} pageNumber={singlePageIndex} active={true} ageGroup={story.ageGroup} mode={story.mode} isListening={listeningIdx === (singlePageIndex-1)} correctIndices={correctIndices} missedCounts={missedCounts} onToggleListening={() => toggleListening(singlePageIndex-1)} isSinglePage={true} isWandMode={isWandMode} onWordClick={handleWordClick} />)}
+                        {singlePageIndex === story.pages.length + 1 && <PageContent type="the-end" active={true} isSinglePage={true} />}
+                        {singlePageIndex === story.pages.length + 2 && (<PageContent type="end" active={true} analysis={analysis} onHome={onHome} onReadAgain={handleReadAgain} onSave={() => handleSave()} isSaving={isSaving} hasSaved={hasSaved} onCreateBonusStory={onCreateBonusStory} isSinglePage={true} />)}
+                    </div>
                 </div>
             ) : (
                 <div className="relative w-full max-7xl aspect-[1.8/1] transition-transform duration-500 scale-[0.85] drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)]" style={{ perspective: '3500px' }}>
