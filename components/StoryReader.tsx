@@ -63,9 +63,16 @@ const StarShower: React.FC = () => {
         if (!ctx) return;
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        const isMobile = window.innerWidth < 768;
         const stars: any[] = [];
         for (let i = 0; i < 100; i++) {
-            stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height, size: Math.random() * 5 + 2, speed: Math.random() * 4 + 1, color: `hsl(${Math.random() * 360}, 100%, 80%)` });
+            stars.push({ 
+                x: Math.random() * canvas.width, 
+                y: Math.random() * canvas.height - canvas.height, 
+                size: Math.random() * 5 + 2, 
+                speed: (Math.random() * 4 + 2) * (isMobile ? 2 : 1), 
+                color: `hsl(${Math.random() * 360}, 100%, 80%)` 
+            });
         }
         let animationFrame: number;
         const draw = () => {
