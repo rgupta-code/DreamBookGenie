@@ -96,10 +96,10 @@ export const disconnectDrive = () => {
 
 export const testConnection = async (url: string): Promise<{ success: boolean; message?: string }> => {
     try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({ action: 'ping' })
+        const pingUrl = `${url}${url.includes('?') ? '&' : '?'}action=ping`;
+        const response = await fetch(pingUrl, {
+            method: 'GET',
+            redirect: 'follow'
         });
         
         if (response.status === 401 || response.status === 403) {
@@ -148,6 +148,7 @@ export const saveStoryToLibrary = async (story: Story, skipDrive: boolean = fals
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify({ action: 'save', story: storyToSave }),
+                redirect: 'follow'
             });
 
         if (response.status === 401 || response.status === 403) {

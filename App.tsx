@@ -902,13 +902,7 @@ export default function App() {
                           >
                               <span className="font-black text-sm">Magic Lite</span>
                               <span className="text-[10px] font-bold opacity-60">Standard Flash Models</span>
-                              <div className="mt-2 flex flex-col gap-1 w-full text-left">
-                                  <span className="text-[9px] font-black text-purple-400 uppercase tracking-wider border-b border-purple-100/50 pb-1 w-full">Models</span>
-                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Text & Analysis:</span><span className="text-[9px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded">gemini-2.5-flash</span></div>
-                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Image:</span><span className="text-[9px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded">gemini-2.5-flash-image</span></div>
-                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Audio (TTS):</span><span className="text-[8px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded">gemini-2.5-flash-preview-tts</span></div>
-                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Voice Coach:</span><span className="text-[8px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded whitespace-nowrap overflow-hidden text-ellipsis" title="gemini-2.0-flash-exp">gemini-2.0-flash-exp</span></div>
-                              </div>
+
                           </button>
                           <button 
                             type="button" 
@@ -917,13 +911,7 @@ export default function App() {
                           >
                               <span className="font-black text-sm flex items-center gap-1">Magical Pro <ShieldCheck className="w-3 h-3" /></span>
                               <span className="text-[10px] font-bold opacity-60">High-Quality Pro Models</span>
-                              <div className="mt-2 flex flex-col gap-1 w-full text-left">
-                                  <span className="text-[9px] font-black text-purple-400 uppercase tracking-wider border-b border-purple-100/50 pb-1 w-full">Models</span>
-                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Text & Analysis:</span><span className="text-[9px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded">gemini-2.5-flash</span></div>
-                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Image:</span><span className="text-[9px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded">gemini-2.5-flash-image</span></div>
-                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Audio (TTS):</span><span className="text-[8px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded">gemini-2.5-flash-preview-tts</span></div>
-                                  <div className="flex flex-col w-full"><span className="text-[9px] font-bold text-slate-400">Voice Coach:</span><span className="text-[8px] font-mono text-slate-600 bg-slate-100 py-0.5 rounded whitespace-nowrap overflow-hidden text-ellipsis" title="gemini-2.5-flash-native-audio-preview-12-2025">gemini...native-audio</span></div>
-                              </div>
+
                           </button>
                       </div>
 
