@@ -950,20 +950,20 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
                     onTouchStart={handleTouchStart}
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
-                    className="w-full max-w-lg aspect-[4/5] bg-white rounded-r-2xl rounded-l-md shadow-2xl relative border border-slate-100 flex flex-col ml-8 mr-2 pointer-events-auto shrink-0"
+                    className="w-full max-w-lg aspect-[4/5] bg-white rounded-r-xl rounded-l shadow-2xl relative border border-slate-100 flex flex-col ml-3 mr-0 pointer-events-auto shrink-0"
                 >
                     {/* Spiral Binding */}
-                    <div className="absolute top-0 bottom-0 left-[-20px] w-[36px] z-[60] flex flex-col justify-evenly py-6 pointer-events-none">
-                        {Array.from({length: 12}).map((_, i) => (
-                            <div key={i} className="flex items-center w-full relative h-[12px] opacity-90">
-                                <div className="absolute left-[2px] w-[12px] h-[12px] rounded-full shadow-inner bg-slate-800"></div>
-                                <div className="absolute left-[8px] right-[8px] h-[8px] top-[2px] bg-gradient-to-b from-slate-300 via-slate-100 to-slate-400 rounded-full shadow-md z-10 border border-slate-400"></div>
-                                <div className="absolute right-[2px] w-[12px] h-[12px] rounded-full shadow-inner bg-slate-800"></div>
+                    <div className="absolute top-0 bottom-0 left-[-12px] w-[24px] z-[60] flex flex-col justify-evenly py-4 pointer-events-none">
+                        {Array.from({length: 16}).map((_, i) => (
+                            <div key={i} className="flex items-center w-full relative h-[8px] opacity-90">
+                                <div className="absolute left-[2px] w-[8px] h-[8px] rounded-full shadow-inner bg-slate-800"></div>
+                                <div className="absolute left-[6px] right-[6px] h-[5px] top-[1.5px] bg-gradient-to-b from-slate-300 via-slate-100 to-slate-400 rounded-full shadow-md z-10 border border-slate-400"></div>
+                                <div className="absolute right-[2px] w-[8px] h-[8px] rounded-full shadow-inner bg-slate-800"></div>
                             </div>
                         ))}
                     </div>
                     {/* Content Layer */}
-                    <div className="w-full h-full overflow-hidden relative rounded-r-2xl z-10 bg-white">
+                    <div className="w-full h-full overflow-hidden relative rounded-r-xl z-10 bg-white">
                         <div key={singlePageIndex} className={`w-full h-full ${swipeDirection === 'right' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`}>
                             {singlePageIndex === 0 && <PageContent type="title" storyTitle={story.title} active={true} mode={story.mode} isSinglePage={true} watermarkImage={story.pages[0]?.imageUrl} />}
                             {singlePageIndex > 0 && singlePageIndex <= story.pages.length && (<PageContent type="story" page={story.pages[singlePageIndex-1]} pageNumber={singlePageIndex} active={true} ageGroup={story.ageGroup} mode={story.mode} isListening={listeningIdx === (singlePageIndex-1)} correctIndices={correctIndices} missedCounts={missedCounts} onToggleListening={() => toggleListening(singlePageIndex-1)} isSinglePage={true} isWandMode={isWandMode} onWordClick={handleWordClick} />)}
