@@ -128,12 +128,14 @@ export class LiveCoachSession {
             },
             callbacks: {
                 onopen: () => {
+                    console.log("LIVE_SESSION: Connection established");
                     this.isConnected = true;
                     this.startAudioInput(stream, sessionPromise);
                     this.startPolling();
                     this.resetSilenceTimer();
                 },
                 onmessage: async (message: LiveServerMessage) => {
+                    console.log("LIVE_SESSION: Message received", message);
                     this.resetSilenceTimer();
 
                     // Handle Transcriptions
