@@ -281,17 +281,38 @@ export class LiveCoachSession {
 
     disconnect() {
         this.isConnected = false;
+        
+        // CRITICAL: Stop the audio processor from generating new work immediately
+        if (this.processor) {
+            this.processor.onaudioprocess = null;
+            this.processor.disconnect();
+            this.processor = null;
+        }
+
         this.stopPolling();
         if (this.silenceTimer) clearTimeout(this.silenceTimer);
         this.sources.forEach(s => { try { s.stop(); } catch(e) {} });
         this.sources.clear();
-        if (this.inputSource) this.inputSource.disconnect();
-        if (this.processor) this.processor.disconnect();
-        if (this.inputAudioContext) this.inputAudioContext.close().catch(() => {});
-        if (this.outputAudioContext) this.outputAudioContext.close().catch(() => {});
+        if (this.inputSource) {
+            this.inputSource.disconnect();
+            this.inputSource = null;
+        }
+        
+        if (this.inputAudioContext) {
+            this.inputAudioContext.close().catch(() => {});
+            this.inputAudioContext = null;
+        }
+        if (this.outputAudioContext) {
+            this.outputAudioContext.close().catch(() => {});
+            this.outputAudioContext = null;
+        }
         
         this.sessionPromise?.then(session => {
-            try { session.close(); } catch (e) {}
+            try { 
+                if (session && typeof session.close === 'function') {
+                    session.close(); 
+                }
+            } catch (e) {}
         });
         this.sessionPromise = null;
     }
