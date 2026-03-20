@@ -72,6 +72,7 @@ export class LiveCoachSession {
     private outputAnalyser: AnalyserNode | null = null;
     private outputNode: GainNode | null = null;
     private animationFrame: number | null = null;
+    private isConnected: boolean = false;
 
     private currentInputTranscription: string = '';
     private currentOutputTranscription: string = '';
@@ -127,6 +128,7 @@ export class LiveCoachSession {
             },
             callbacks: {
                 onopen: () => {
+                    this.isConnected = true;
                     this.startAudioInput(stream, sessionPromise);
                     this.startPolling();
                     this.resetSilenceTimer();
@@ -180,10 +182,12 @@ export class LiveCoachSession {
                     }
                 },
                 onclose: () => {
+                    this.isConnected = false;
                     this.stopPolling();
                     if (this.silenceTimer) clearTimeout(this.silenceTimer);
                 },
                 onerror: (e) => {
+                    this.isConnected = false;
                     console.error("Live session error:", e);
                     this.callbacks.onError(new Error("Connection error"));
                 }
@@ -214,7 +218,13 @@ export class LiveCoachSession {
 
             const pcmBlob = createBlob(inputData);
             sessionPromise.then((session) => {
-                session.sendRealtimeInput({ media: pcmBlob });
+                if (this.isConnected) {
+                    try {
+                        session.sendRealtimeInput({ media: pcmBlob });
+                    } catch (err) {
+                        this.isConnected = false;
+                    }
+                }
             });
         };
 
@@ -259,13 +269,18 @@ export class LiveCoachSession {
 
     updateContext(message: string) {
         this.sessionPromise?.then(session => {
-            session.sendRealtimeInput({ 
-                text: message 
-            });
+            if (this.isConnected) {
+                try {
+                    session.sendRealtimeInput({ text: message });
+                } catch (e) {
+                    this.isConnected = false;
+                }
+            }
         });
     }
 
     disconnect() {
+        this.isConnected = false;
         this.stopPolling();
         if (this.silenceTimer) clearTimeout(this.silenceTimer);
         this.sources.forEach(s => { try { s.stop(); } catch(e) {} });
