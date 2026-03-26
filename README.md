@@ -1,6 +1,3 @@
-<div align="center">
-
-
 # DreamBookGenie
 
 The #1 Magical Storyteller for Kids — create personalized picture books, learn new topics, and practice reading with your very own AI coach.
