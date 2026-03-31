@@ -193,7 +193,8 @@ export const getAllStories = async (): Promise<Story[]> => {
             characterImage: formatDriveUrl(s.characterImage),
             pages: s.pages.map(p => ({
                 ...p,
-                imageUrl: formatDriveUrl(p.imageUrl)
+                imageUrl: formatDriveUrl(p.imageUrl),
+                audioBase64: p.audioBase64 // Keep the voice data!
             }))
         }));
 

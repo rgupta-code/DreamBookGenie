@@ -32,6 +32,29 @@
         console.info = function(...args) {
           if (!shouldSuppress(args)) originalInfo.apply(console, args);
         };
+
+        // Suppress specific production warnings that the user wants to hide
+        const originalWarn = console.warn;
+        const originalError = console.error;
+
+        console.warn = function(...args) {
+          const msg = args[0] || '';
+          if (typeof msg === 'string' && (
+            msg.includes('cdn.tailwindcss.com') || 
+            msg.includes('pwa-192x192.png') ||
+            msg.includes('Manifest: ')
+          )) return;
+          originalWarn.apply(console, args);
+        };
+
+        console.error = function(...args) {
+            const msg = args[0] || '';
+            if (typeof msg === 'string' && (
+              msg.includes('pwa-192x192.png') ||
+              msg.includes('404')
+            )) return;
+            originalError.apply(console, args);
+          };
       })();
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -91,7 +114,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body class="bg-slate-50 text-slate-900 overflow-hidden">
     <div id="root"></div>

@@ -336,6 +336,25 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
         return [story.pages[left]?.text, story.pages[right]?.text].filter(Boolean).join(" ");
     }
   }, [singlePageIndex, flippedIndex, isSinglePage, story.pages]);
+  
+  const hasCurrentAudio = useMemo(() => {
+    if (isSinglePage) {
+        const idx = singlePageIndex > 0 && singlePageIndex <= story.pages.length ? singlePageIndex - 1 : -1;
+        if (idx === -1) return false;
+        const p = story.pages[idx];
+        return !!(p?.audioUrl || p?.audioBase64);
+    } else {
+        if (flippedIndex === -1) { // Title page
+            const p = story.pages[0];
+            return !!(p?.audioUrl || p?.audioBase64);
+        }
+        const left = flippedIndex * 2 + 1;
+        const right = flippedIndex * 2 + 2;
+        const leftP = story.pages[left];
+        const rightP = story.pages[right];
+        return !!(leftP?.audioUrl || leftP?.audioBase64 || rightP?.audioUrl || rightP?.audioBase64);
+    }
+  }, [singlePageIndex, flippedIndex, isSinglePage, story.pages]);
 
   useEffect(() => {
     if (isCoachMode && coachRef.current && currentPageText) {
@@ -475,8 +494,8 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
           
         if (targetPageIdx >= 0 && targetPageIdx < story.pages.length) {
              const p = story.pages[targetPageIdx];
-             if (p?.audioUrl) {
-                 playAudio(p.audioUrl, targetPageIdx);
+             if (p?.audioUrl || p?.audioBase64) {
+                 playAudio(p.audioUrl, targetPageIdx, p.audioBase64);
              } else {
                  setLastReadIndex(targetPageIdx);
                  handleAutoPageTurnRef.current(targetPageIdx);
@@ -597,9 +616,36 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
       }
   };
 
-  const playAudio = (url: string, pageIdx: number) => {
+  const playAudio = (url: string | undefined, pageIdx: number, base64?: string) => {
       if (audioRef.current) audioRef.current.pause();
-      const a = new Audio(url);
+
+      let targetUrl = url;
+      
+      // If we don't have a temporary Blob URL (common for library books),
+      // we must recreate it from the persistent base64 data.
+      if (!targetUrl && base64) {
+          try {
+              const byteCharacters = atob(base64);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                  byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+              const blob = new Blob([byteArray], { type: 'audio/wav' });
+              targetUrl = URL.createObjectURL(blob);
+          } catch (e) {
+              console.error("Base64 audio reconstruction failed", e);
+          }
+      }
+
+      if (!targetUrl) {
+          console.warn("No audio available for this page");
+          setIsPlaying(false);
+          setIsAutoReading(false);
+          return;
+      }
+
+      const a = new Audio(targetUrl);
       audioRef.current = a;
       a.onended = () => { 
           setIsPlaying(false); 
@@ -633,13 +679,19 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
                   return;
               }
               const idx = singlePageIndex > 0 && singlePageIndex <= story.pages.length ? singlePageIndex - 1 : 0;
-              if (story.pages[idx]?.audioUrl) playAudio(story.pages[idx].audioUrl!, idx);
+              const page = story.pages[idx];
+              if (page?.audioUrl || page?.audioBase64) {
+                  playAudio(page.audioUrl, idx, page.audioBase64);
+              }
           } else {
               let idx = 0;
               if (flippedIndex === -1) idx = 0;
               else idx = flippedIndex * 2 + 1; 
               
-              if (story.pages[idx]?.audioUrl) playAudio(story.pages[idx].audioUrl!, idx);
+              const page = story.pages[idx];
+              if (page?.audioUrl || page?.audioBase64) {
+                  playAudio(page.audioUrl, idx, page.audioBase64);
+              }
           }
       }
   };
@@ -1059,8 +1111,9 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
                 
                 <button 
                     onClick={togglePlay}
-                    disabled={atTheEnd}
-                    className={`p-4 rounded-full transition-all ${isPlaying ? 'bg-red-500 text-white animate-pulse' : 'bg-indigo-600 text-white'} ${btnClass} ${atTheEnd ? 'opacity-20 cursor-not-allowed' : ''}`}
+                    disabled={atTheEnd || (!isPlaying && !hasCurrentAudio)}
+                    className={`p-4 rounded-full transition-all ${isPlaying ? 'bg-red-500 text-white animate-pulse' : 'bg-indigo-600 text-white'} ${btnClass} ${(atTheEnd || (!isPlaying && !hasCurrentAudio)) ? 'opacity-20 grayscale-50 cursor-not-allowed' : ''}`}
+                    title={atTheEnd ? "The End" : (!hasCurrentAudio ? "Audio not available for this page" : (isPlaying ? "Pause" : "Play Story"))}
                 >
                     {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-0.5" />}
                 </button>
