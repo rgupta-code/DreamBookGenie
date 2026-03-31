@@ -99,6 +99,8 @@ export const testConnection = async (url: string): Promise<{ success: boolean; m
         const pingUrl = `${url}${url.includes('?') ? '&' : '?'}action=ping`;
         const response = await fetch(pingUrl, {
             method: 'GET',
+            mode: 'cors',
+            headers: { 'Accept': 'application/json' },
             redirect: 'follow',
             credentials: 'omit'
         });
@@ -147,7 +149,8 @@ export const saveStoryToLibrary = async (story: Story, skipDrive: boolean = fals
         // Save to Drive
         const response = await fetch(url, {
                 method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
+                mode: 'cors',
+                headers: { 'Content-Type': 'text/plain', 'Accept': 'application/json' },
                 body: JSON.stringify({ action: 'save', story: storyToSave }),
                 redirect: 'follow',
                 credentials: 'omit'
