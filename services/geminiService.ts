@@ -171,11 +171,13 @@ export const generateStoryStructure = async (request: StoryRequest): Promise<Sto
   let userPrompt = "";
 
   if (request.mode === 'learning') {
-      systemPrompt = `You are the "Magic Teacher," a creative AI specialized in writing engaging, educational picture books for children. Target Audience: ${request.ageGroup}. Generate a exactly ${pageCount}-page educational book. Detect the language of the topic and respond in that language. Respond strictly in JSON format. Ensure you provide a consistent character visual description for the main character.`;
+      systemPrompt = `You are the "Magic Teacher," a creative AI specialized in writing engaging, educational picture books for children. Target Audience: ${request.ageGroup}. Generate a exactly ${pageCount}-page educational book. Detect the language of the topic and respond in that language. Respond strictly in JSON format. 
+      Important: If there is a main character in the educational story, give them a unique, descriptive, and context-appropriate name. NOT "Leo" or "Lilly". Use names that fit the topic. Ensure you provide a consistent character visual description for this character.`;
       userPrompt = `Create an educational book about: ${request.topic}.`;
   } else {
-      systemPrompt = `You are the "Magic Storybook Engine," a creative AI specialized in writing personalized stories for children. Target Audience: ${request.ageGroup}. Strictly G-rated. Detect the language used in the prompt and respond in that language. Respond strictly in JSON format. Generate exactly ${pageCount} pages. Ensure you provide a consistent character visual description for the main character.`;
-      userPrompt = `Write a story about: ${request.topic}. \nMain Character: ${request.characterName}. \nCharacter Description: ${request.characterDescription}`;
+      systemPrompt = `You are the "Magic Storybook Engine," a creative AI specialized in writing personalized stories for children. Target Audience: ${request.ageGroup}. Strictly G-rated. Detect the language used in the prompt and respond in that language. Respond strictly in JSON format. Generate exactly ${pageCount} pages. 
+      Important: If the characterName is empty or generic, invent a unique, magical, and context-appropriate name for the hero that fits this specific story. DO NOT use "Leo" or "Lilly". Ensure you provide a consistent character visual description for the main character.`;
+      userPrompt = `Write a story about: ${request.topic}. \nMain Character Name: ${request.characterName || "Invent a new unique name"}. \nCharacter Description: ${request.characterDescription}`;
   }
 
   const parts: any[] = [{ text: userPrompt }];
@@ -200,6 +202,7 @@ export const generateStoryStructure = async (request: StoryRequest): Promise<Sto
             type: Type.OBJECT,
             properties: {
                 title: { type: Type.STRING },
+                character_name: { type: Type.STRING, description: "The name of the hero. If the input name was empty, invent a unique one here." },
                 language: { type: Type.STRING, description: "BCP-47 language code of the story, e.g. 'en-US', 'es-ES'" },
                 character_description: { type: Type.STRING, description: "A detailed visual description of the main character (clothing, colors, species, features) to be used for consistent image generation." },
                 theme_colors: {
@@ -216,7 +219,7 @@ export const generateStoryStructure = async (request: StoryRequest): Promise<Sto
                     }
                 }
             },
-            required: ["title", "theme_colors", "pages", "language", "character_description"]
+            required: ["title", "character_name", "theme_colors", "pages", "language", "character_description"]
         }
       }
     }));
@@ -224,6 +227,7 @@ export const generateStoryStructure = async (request: StoryRequest): Promise<Sto
     const rawStory = JSON.parse(response.text || '{}');
     const storyData: Story = {
         ...rawStory,
+        characterName: rawStory.character_name, // Map JSON name to story object
         characterDescription: rawStory.character_description // Map snake_case to camelCase
     };
 

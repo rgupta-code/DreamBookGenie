@@ -82,6 +82,15 @@ export default function App() {
   const [featureIndex, setFeatureIndex] = useState(0);
   const [storyToDelete, setStoryToDelete] = useState<string | null>(null);
 
+  // Handle URL Routing (Direct to Library via ?tab=library)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab === 'library') {
+      setActiveTab('library');
+    }
+  }, []);
+
   // Check Firebase connection when settings open
   useEffect(() => {
       if (showSettings) {
