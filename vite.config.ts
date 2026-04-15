@@ -29,7 +29,8 @@ export default defineConfig(({ mode }) => {
         console.error("Error reading .env.local:", e);
     }
     return {
-      base: '/DreamBookGenie/',
+      // Relative base: app loads at http://localhost:3000/ in dev and works when hosted under any path (e.g. GitHub Pages /repo/).
+      base: './',
       server: {
         port: 3000,
         host: '0.0.0.0',

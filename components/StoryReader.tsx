@@ -272,6 +272,8 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
   const [isSaving, setIsSaving] = useState(false);
   const [explainingWord, setExplainingWord] = useState<string | null>(null);
   const [explanation, setExplanation] = useState<string | null>(null);
+  /** Magic-wand word lookup: show clear steps while AI + TTS run (kid-friendly progress). */
+  const [wandLookupPhase, setWandLookupPhase] = useState<"idle" | "meaning" | "voice">("idle");
 
   const [wordCache, setWordCache] = useState<Record<string, { explanation: string, audioUrl: string | null }>>({});
 
@@ -804,6 +806,7 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
     if (wordCache[cacheKey]) {
         playMagicChime();
         setExplainingWord(word);
+        setWandLookupPhase("idle");
         setExplanation(wordCache[cacheKey].explanation);
         const speech = wordCache[cacheKey].audioUrl;
         if (speech) {
@@ -816,9 +819,10 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
     }
 
     playMagicChime();
-    setExplainingWord(word); 
-    setExplanation("Sparkling thoughts..."); 
-    
+    setExplainingWord(word);
+    setExplanation(null);
+    setWandLookupPhase("meaning");
+
     const parts = [];
     if (wandSettings.meaning) parts.push("explain its meaning");
     if (wandSettings.use) parts.push("show how to use it in a fun sentence");
@@ -829,25 +833,29 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
 
     try {
         const result = await explainWordInCharacter(word, context, characterTask, story.language);
-        let speech;
-        try {
-             speech = await generateSpeech(result, story.voiceGender, story.voiceTone);
-        } catch (speechError) {
-             console.warn("Speech generation failed", speechError);
-        }
         setExplanation(result);
-        setWordCache(prev => ({
+        setWandLookupPhase("voice");
+
+        let speech: string | undefined;
+        try {
+            speech = await generateSpeech(result, story.voiceGender, story.voiceTone);
+        } catch (speechError) {
+            console.warn("Speech generation failed", speechError);
+        }
+        setWordCache((prev) => ({
             ...prev,
-            [cacheKey]: { explanation: result, audioUrl: speech || null }
+            [cacheKey]: { explanation: result, audioUrl: speech || null },
         }));
         if (speech) {
             if (wandAudioRef.current) wandAudioRef.current.pause();
             const a = new Audio(speech);
             wandAudioRef.current = a;
-            a.play().catch(e => console.error("Wand speech failed", e));
+            a.play().catch((e) => console.error("Wand speech failed", e));
         }
-    } catch (e) { 
-        setExplanation("Oops! My magic missed."); 
+        setWandLookupPhase("idle");
+    } catch (e) {
+        setExplanation("Oops! My magic missed.");
+        setWandLookupPhase("idle");
     }
   };
 
@@ -967,7 +975,73 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onHome, onCreateBonusS
             </div>
         )}
 
-        {explainingWord && (<div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm animate-fade-in"><div className="bg-white rounded-[2rem] p-8 shadow-2xl max-w-sm w-full text-center relative border-4 border-amber-400 animate-slide-up"><button onClick={() => setExplainingWord(null)} className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600"><X className="w-6 h-6" /></button><Sparkles className="w-12 h-12 text-yellow-400 mx-auto mb-4 animate-bounce" /><h3 className="text-2xl font-black text-indigo-900 mb-2 uppercase tracking-wide">{explainingWord}</h3><p className="text-slate-700 font-bold leading-relaxed">{explanation}</p></div></div>)}
+        {explainingWord && (
+            <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm animate-fade-in">
+                <div className="bg-white rounded-[2rem] p-8 shadow-2xl max-w-sm w-full text-center relative border-4 border-amber-400 animate-slide-up">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setExplainingWord(null);
+                            setExplanation(null);
+                            setWandLookupPhase("idle");
+                        }}
+                        className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600"
+                        aria-label="Close"
+                    >
+                        <X className="w-6 h-6" />
+                    </button>
+                    <Sparkles className="w-12 h-12 text-yellow-400 mx-auto mb-4 animate-bounce" />
+                    <h3 className="text-2xl font-black text-indigo-900 mb-1 uppercase tracking-wide">{explainingWord}</h3>
+
+                    {wandLookupPhase === "meaning" && (
+                        <div className="mt-4 space-y-4">
+                            <p className="text-lg font-black text-amber-600">Working on it…</p>
+                            <p className="text-slate-600 font-bold text-sm leading-snug">
+                                We&apos;re learning what this word means so the fairy can tell you.
+                            </p>
+                            <div className="w-full h-4 bg-amber-100 rounded-full overflow-hidden border-2 border-amber-200">
+                                <div
+                                    className="h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-pink-400 transition-all duration-500 w-[42%] animate-pulse"
+                                    role="progressbar"
+                                    aria-valuenow={1}
+                                    aria-valuemin={1}
+                                    aria-valuemax={2}
+                                    aria-label="Step 1 of 2"
+                                />
+                            </div>
+                            <div className="flex items-center justify-center gap-2 text-indigo-800 font-black text-sm">
+                                <Loader2 className="w-5 h-5 animate-spin shrink-0" />
+                                <span>Step 1 of 2</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {wandLookupPhase === "voice" && explanation && (
+                        <div className="mt-4 space-y-4 text-left">
+                            <p className="text-slate-700 font-bold leading-relaxed">{explanation}</p>
+                            <div className="w-full h-4 bg-indigo-100 rounded-full overflow-hidden border-2 border-indigo-200">
+                                <div
+                                    className="h-full rounded-full bg-gradient-to-r from-indigo-400 to-violet-500 w-[88%] transition-all duration-500"
+                                    role="progressbar"
+                                    aria-valuenow={2}
+                                    aria-valuemin={1}
+                                    aria-valuemax={2}
+                                    aria-label="Step 2 of 2"
+                                />
+                            </div>
+                            <div className="flex items-center justify-center gap-2 text-indigo-700 font-black text-sm text-center">
+                                <Loader2 className="w-5 h-5 animate-spin shrink-0" />
+                                <span>Step 2 of 2: Getting your fairy ready to read this out loud…</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {wandLookupPhase === "idle" && explanation && (
+                        <p className="text-slate-700 font-bold leading-relaxed mt-4">{explanation}</p>
+                    )}
+                </div>
+            </div>
+        )}
 
         <div className="flex-1 w-full flex items-center justify-center py-10 px-4 overflow-hidden relative z-10 pt-[max(4rem,calc(env(safe-area-inset-top)+3rem))]">
             

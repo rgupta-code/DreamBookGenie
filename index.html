@@ -49,10 +49,7 @@
 
         console.error = function(...args) {
             const msg = args[0] || '';
-            if (typeof msg === 'string' && (
-              msg.includes('pwa-192x192.png') ||
-              msg.includes('404')
-            )) return;
+            if (typeof msg === 'string' && msg.includes('pwa-192x192.png')) return;
             originalError.apply(console, args);
           };
       })();
@@ -102,21 +99,9 @@
             inset 10px 0 20px -10px rgba(0,0,0,0.1);
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "jspdf": "https://esm.sh/jspdf@2.5.1"
-  }
-}
-</script>
 </head>
   <body class="bg-slate-50 text-slate-900 overflow-hidden">
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+  <script type="module" src="./index.tsx"></script>
 </body>
 </html>
