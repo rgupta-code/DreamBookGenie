@@ -62,7 +62,7 @@ export const validateApiKey = async (key: string): Promise<boolean> => {
     const ai = new GoogleGenAI({ apiKey: key });
     // Use a simple generation request to test the key with a lightweight model
     const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.7-flash',
         contents: { parts: [{ text: "ping" }] },
     });
     // Check if we got a valid response object
