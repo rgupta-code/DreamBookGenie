@@ -126,7 +126,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ mode, onSubmit, isLoading, initia
       if (err.name === 'NotAllowedError') {
         alert("Camera permission denied. Please allow camera access in your browser settings to take photos.");
       } else {
-        alert("Could not access camera.");
+        alert("Could not access your camera.");
       }
     }
   };
